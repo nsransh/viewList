@@ -6,20 +6,20 @@ import androidx.lifecycle.ViewModel
 import com.example.listviewinduksiapplication.ui.modal.DataUser
 
 class UserVM : ViewModel() {
-    private val vmData = MutableLiveData<List<DataUser>>()
-    val vmDatas: LiveData<List<DataUser>> get() = vmData
+    private val _listUser = MutableLiveData<List<DataUser>>()
+    val vmDatas: LiveData<List<DataUser>> get() = _listUser
 
     init {
-        vmData.value = emptyList()
+        _listUser.value = emptyList()
     }
 
     fun initList( list : List<DataUser>){
-        vmData.value = list
+        _listUser.value = list
     }
 
     fun addNew(data: DataUser){
-        val newList = vmData.value!!.toMutableList() // bikin list baru dari _vm data hanya untuk bantu nge-add
+        val newList = _listUser.value!!.toMutableList() // bikin list baru dari _listUser data hanya untuk bantu nge-add
         newList.add(data)
-        vmData.value = newList // update livedata (_vmdata) pake newlist yang baru
+        _listUser.value = newList // update livedata (_listUser) pake newlist yang baru
     }
 }

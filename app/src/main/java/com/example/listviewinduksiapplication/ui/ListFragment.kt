@@ -1,6 +1,7 @@
 package com.example.listviewinduksiapplication.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,11 +16,11 @@ class ListFragment : Fragment() {
 
     private lateinit var binding: FragmentListBinding
     private lateinit var userVM: UserVM
-    private lateinit var mainRecyclerView: RecyclerView
     private lateinit var mainAdapter: ListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        userVM = ViewModelProvider(requireActivity())[UserVM::class.java]
     }
 
     override fun onCreateView(
@@ -29,46 +30,36 @@ class ListFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentListBinding.inflate(layoutInflater)
         return binding.root
-        subscribe()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViewModel()
-        initUI()
+
+        initUserViewModel()
+        mainAdapter = ListAdapter(userVM.vmDatas.value!!)
         binding.apply {
             listUser.layoutManager = LinearLayoutManager(requireContext())
-        }
-    }
+            listUser.adapter = mainAdapter
 
-    fun initViewModel(){
-        userVM = ViewModelProvider(this)[UserVM::class.java]
-    }
-
-    fun subscribe(){
-        userVM.vmDatas.observe(viewLifecycleOwner){ vmDatas ->
-            mainAdapter = ListAdapter(vmDatas)
-            mainRecyclerView.adapter = mainAdapter
-        }
-    }
-
-    fun initUI(){
-        val listUser = mutableListOf<DataUser>(
-            DataUser("Rani","Nurani"),
-            DataUser("Aldi","aldis"),
-            DataUser("Humam","humem"),
-            DataUser("Condro","condros"),
-            DataUser("Alfi","alfis")
-        )
-        userVM.initList(listUser)
-        binding.apply {
-            if (etFirstName.text.toString().isNotBlank() && etLastName.text.toString().isNotBlank()){
-                userVM.addNew(DataUser(etFirstName.toString(),etLastName.toString()))
-                etFirstName.text.clear()
-                etLastName.text.clear()
-                mainAdapter.notifyItemInserted(userVM.vmDatas.value!!.size -1)
+            btnAdd.setOnClickListener {
+                if (etFirstName.text.toString().isNotBlank() && etLastName.text.toString().isNotBlank()){
+                    userVM.addNew(DataUser(etFirstName.text.toString(),etLastName.text.toString()))
+                    etFirstName.text.clear()
+                    etLastName.text.clear()
+                    Log.e("list","${userVM.vmDatas.value!!.size-1}")
+                    mainAdapter.notifyItemInserted(userVM.vmDatas.value!!.size-1)
+//                    mainAdapter = ListAdapter(userVM.vmDatas.value!!)
+                }
             }
         }
+    }
+
+    fun initUserViewModel(){
+        userVM.addNew(DataUser("Rani","Nurani"))
+        userVM.addNew(DataUser("Aldi","aldis"))
+        userVM.addNew(DataUser("Humam","humem"))
+        userVM.addNew(DataUser("Condro","condros"))
+        userVM.addNew(DataUser("Alfi","alfis"))
     }
 
     companion object {

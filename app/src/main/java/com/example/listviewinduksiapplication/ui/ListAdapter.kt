@@ -30,6 +30,7 @@ class ListAdapter(private val data: List<DataUser>): RecyclerView.Adapter<ListAd
                 ivProfile.setImageDrawable(itemView.context.getDrawable(R.drawable.pawprint))
                 tvFirstName.text = dataUser.firstName
                 tvLastName.text = dataUser.lastName
+
             }
         }
 //        val tvFirstName = binding.tvFirstName
